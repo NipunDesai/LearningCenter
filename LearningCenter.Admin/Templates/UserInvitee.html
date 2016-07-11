@@ -1,0 +1,38 @@
+﻿<div ng-controller="userController">
+    <toast class="toaster-div"> </toast>
+    <form name="inviteeUser" novalidate ng-submit="inviteeUser.$valid && saveUserInvitee()">
+        <div>
+            <p class="error">{{errorMessage}}</p>
+            <p class="success">{{successMessage}}</p>
+        </div>
+
+        <div class="row m-t20">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 control-label"><label class="error">*</label>Name:</label>
+                    <div class="col-sm-9 align-left">
+                        <input type="text" class="form-control" id="name" maxlength="500" required name="name" ng-model="userInvitee.Name">
+
+                        <p ng-show="inviteeUser.name.$error.required && submitted" class="error">Name is required</p>
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="email" class="col-sm-2 control-label"><label class="error">*</label>Email:</label>
+                    <div class="col-sm-9 align-left">
+                        <input type="email" class="form-control" id="email" maxlength="150" required name="email" ng-model="userInvitee.Email">
+                        <p ng-show="inviteeUser.email.$error.required && submitted" class="error">Email is required</p>
+                        <p ng-show="inviteeUser.email.$error.email && submitted" class="error">Invalid Email</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-success" ng-click="submitted=true">Send Invitation</button>
+
+        </div>
+    </form>
+    <div id="busyindicator" class="busy-indicator" ng-show="isLoading">
+        <img src="../Images/Loading.GIF" />
+    </div>
+</div>

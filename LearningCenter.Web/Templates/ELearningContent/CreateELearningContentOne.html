@@ -1,0 +1,114 @@
+﻿<div id="Step1" class="steps" ng-controller="createELearningContentController">
+    <div ng-show="isErrorMessage">
+        <p class="alert alert-success text-center m-t20">{{errorMessageString}}</p>
+    </div>
+    <div ng-hide="isErrorMessage">
+        <!--<form class="form-horizontal" name="elearningform" role="form" ng-init="getELearningContentCreatorName()" ng-submit="elearningform.$valid ">-->
+        <form class="form-horizontal" id="msform" name="elearningform" role="form" ng-init="getELearningContentCreatorName()" novalidate ng-submit="elearningform.$valid && createELearningContent() && categoryList.length > 0 ">
+            <!--<p class="error" ng-show="errorMsgDisplay">{{errorMessage}}</p>-->
+            <div ng-show="isContentNull && !loadnigFlags">
+                <label class="error">This content is no longer available</label>
+            </div>
+            <div ng-hide="isContentNull">
+                <div class="row m-t20">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="title" class="col-sm-2 control-label"><label class="error">*</label>Title:</label>
+                            <div class="col-sm-9 align-left">
+                                <input type="text" class="form-control" id="title" maxlength="500" ng-model="eLearningContent.Title" ng-trim="false" required name="title" tooltip="You can enter course Title" tooltip-placement="right">
+                                <div ng-show="eLearningContent.Title.length > '0'">
+                                    {{500 - eLearningContent.Title.length}}/500
+                                </div>
+                                <p ng-show="elearningform.title.$error.required && submitted " class="error">Title is required</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="title" class="col-sm-2 control-label"><label class="error">*</label>Created by:</label>
+                            <div class="col-sm-9 align-left">
+                                <input type="text" class="form-control" id="Createdby" ng-model="eLearningContent.CreatedOn" maxlength="150" required name="createdBy">
+                                <p ng-show="elearningform.createdBy.$error.required && submitted " class="error">Created by is required</p>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="contentcategory" class="col-sm-2 control-label"><label class="error">*</label>Course Topic:</label>
+                            <div class="col-sm-9 align-left">
+                                <div tooltip="You can choose your Course Topic from auto-suggested list" tooltip-placement="right" style="width:280px">
+                                    <tags-input ng-model="categoryList" display-property="Name" placeholder="Add Topic" replace-spaces-with-dashes="false"
+                                                add-from-autocomplete-only="true" min-tags="1">
+                                        <auto-complete source="loadCategory($query)" debounce-delay="0" max-results-to-show="10" min-length="0"></auto-complete>
+                                    </tags-input>
+
+                                    <div ng-if="submitted && categoryList.length == 0">
+                                        <p class="error">Minimum one Topic is required</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="contenttag" class="col-sm-2 control-label">Tag:</label>
+                            <div class="col-sm-9 align-left">
+                                <div tooltip="You can add Tags either entering text (then hit enter) or auto-suggested list" tooltip-placement="right" style="width:280px">
+                                    <tags-input ng-model="tagList" display-property="Name" placeholder="Add Tag" max-length="40" replace-spaces-with-dashes="false">
+                                        <auto-complete source="loadTag($query)" min-length="0" debounce-delay="0" max-results-to-show="10"></auto-complete>
+                                    </tags-input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="contenttarget" class="col-sm-2 control-label">Target:</label>
+                            <div class="col-sm-9">
+                                <div tooltip="You can set Targets either entering text (then hit enter) or auto-suggested list" tooltip-placement="right" style="width:280px">
+                                    <tags-input ng-model="targetList" display-property="Name" placeholder="Add Target" max-length="40" replace-spaces-with-dashes="false">
+                                        <auto-complete source="loadTarget($query)" min-length="0" debounce-delay="0" max-results-to-show="10"></auto-complete>
+                                    </tags-input>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="profilePic" class="col-sm-2 control-label">Course Image:</label>
+                            <div class="col-sm-3">
+                                <div class="btn btn-primary uploadify_span" tooltip="You can upload a .jpg,.jpeg,.png,.gif file (File size limit is 8 MB)." tooltip-placement="bottom">
+                                    <span> Choose File</span>
+                                    <input type="file" class="uploadify" ng-file-select="onFileSelect($files)" accept="{{contentPicType}}" />
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="col-sm-9 pos_rel">
+                                    <div class="pos_rel img-div">
+                                        <img class="media-object" ng-src="{{contentPic}}">
+                                        <a ng-click="deleteImage(contentPic)" class="pos_abs cross close_cross  glyphicon glyphicon-remove-circle"></a>
+                                    </div>
+                                    <!--<label class="error" ng-show="unsupportedFileTypeFlag">{{unsupportedFileTypeMsg}}</label>
+                                    <label class="error" ng-show="unsupportedFileSizeFlag">{{unsupportedFileSizeMsg}}</label>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="description" class="col-sm-2 control-label">Description:</label>
+                            <div class="col-sm-9">
+                                <textarea rows="5" cols="10" class="form-control" id="description" ng-model="eLearningContent.Description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <button type="submit" class="btn btn-primary next" ng-click="submitted=true">Save & next</button>
+                        <a href="#/CourseList"> <input type="button" class="btn btn-default m-l15" value="Cancel" /></a>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+        <div id="busyindicator" class="busy-indicator" ng-show="loadnigFlags">
+            <img src="../Images/Loading.GIF" />
+        </div>
+        <script src="../../Scripts/jquery.easing.min.js"></script>
+    </div>
+</div>
+

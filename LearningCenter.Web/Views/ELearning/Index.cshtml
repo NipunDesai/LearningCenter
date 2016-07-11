@@ -1,0 +1,134 @@
+﻿@using System.Configuration
+@using System.Web.Mvc.Html
+@using Microsoft.AspNet.Identity
+@using LearningCenter.DomainModel.Models.Account
+@model LearningCenter.DomainModel.Models.Account.LoginViewModel
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>LearningCenter</title>
+  </head>
+<body>
+    <div ng-controller="contentController">
+      <div class="navbar">
+            <br />
+                <button class="btn btn-danger" data-toggle="modal" data-target="#loginPopUp">
+                    @*elearning is used as course*@
+                    Create New Course
+                </button>
+            
+
+            <div class="pull-right print-div">
+                <a id="lnkPrintPage" onclick="window.print()" title="print">
+                    <i class="social print"></i>
+                </a>
+                <a href="http://www.facebook.com/sharer.php?u=@ConfigurationManager.AppSettings["ApiPath"]/ELearning" type="icon_link" title="Click to share this post on Facebook" target="_blank">
+                    <i class="social facebook"></i>
+                </a>
+                <a href="mailto:?subject=LearningCenter&amp;body=I wanted to share this course on LearningCenter with you:@ConfigurationManager.AppSettings["ApiPath"]/ELearning" id="ctl00_cph_rptcontents_ctl01_lnkMailTo" title="Email">
+                    <i class="social email"></i>
+                </a>
+
+                <a href="http://twitter.com/home?status=LearningCenter @ConfigurationManager.AppSettings["ApiPath"]/ELearning" id="ctl00_cph_rptcontents_ctl01_TwitterShare" type="icon_link" target="_blank" title="Click to share this post on Twitter">
+                    <i class="social twitter"></i>
+                </a>
+            </div>
+        </div>
+        <div>
+            <div class="input-group" style="width: 850px;float:left">
+                <span class="input-group-addon">Search</span>
+                @*<input type="text" class="form-control" placeholder="Search" ng-model="searchText" style="min-width: 800px;">*@
+                <input type="text" class="form-control" ng-model="search" ng-change="filter()" placeholder="Search" style="min-width: 800px;" /><br />
+            </div>
+            <div style="float:right">
+                Show <select ng-model="itemsPerPage">
+                         <option value="10">10</option>
+                         <option value="50">50</option>
+                         <option value="100">100</option>
+                         <option value="150">150</option>
+                         <option value="200">200</option>
+                     </select> Records
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="container border m-t10" ng-init="getContentList()">
+            @*elearning is used as course*@
+            <h4>Course Result</h4>
+            <hr />
+            <div class="alert alert-success text-center" role="alert" ng-show="contentErrorMessageDisplay">
+                {{errorMessage}}
+            </div>
+            <div class="media-list">
+                <div id="busyindicator" class="busy-indicator" ng-show="isLoading">
+                    <img src="../Images/Loading.GIF" />
+                </div>
+                <div class="border m-t10" ng-repeat="content in totalCollection = (eLearningContentCollection | filter:search) | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit">
+                    <div id="printThis">
+                        <div class="media-heading">
+                            <h4 class="m-0">{{content.Title}}</h4>
+                        </div>
+                        <div class="p-5">
+                            <div>
+                                <a class="pull-left" href="#">
+                                    <img class="media-object" ng-src="{{content.ContentImage}}" style="width: 90px; height: 100px;">
+                                </a>
+                                <div class="media-body">
+                                    <p>{{content.Description}}</p>
+                                    <p>Posted By : {{content.CreatedBy}} on {{content.CreatedDateTime}}  <a class="text-primary" ng-click="viewCreatorDetails(content.UserId)">Read more..</a></p>
+                                    <a class="btn btn-danger" href="/ELearning/ViewCourse/{{content.ContentId}}">View Course</a>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="panel panel-primary">
+                                <div class="pull-left m-t5 rating">
+                                    <rating ng-model="content.Rate" max="max" readonly="!content.IsReadonly" on-hover="hoveringOver(value, content)" on-leave="overStar = null"></rating>
+                                </div>
+                                <div class="pull-right socila_div m-t3">
+                                    <a href="http://www.facebook.com/sharer.php?u=@ConfigurationManager.AppSettings["ApiPath"]/ELearning/ViewCourse/{{content.ContentId}}" type="icon_link" title="Click to share this post on Facebook" target="_blank">
+                                        <i class="social facebook"></i>
+                                    </a>
+                                    <a href="mailto:?subject=LearningCenter&amp;body=I wanted to share this course on LearningCenter with you:@ConfigurationManager.AppSettings["ApiPath"]/ELearning/ViewCourse/{{content.ContentId}}" id="ctl00_cph_rptcontents_ctl01_lnkMailTo" title="Email">
+                                        <i class="social email"></i>
+                                    </a>
+
+                                    <a href="http://twitter.com/home?status=LearningCenter @ConfigurationManager.AppSettings["ApiPath"]/ELearning/ViewCourse/{{content.ContentId}}" id="ctl00_cph_rptcontents_ctl01_TwitterShare" type="icon_link" target="_blank" title="Click to share this post on Twitter">
+                                        <i class="social twitter"></i>
+                                    </a>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="totalCollection.length >0" style="text-align:center">
+                    <pagination total-items="totalItems" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" boundary-links="true"></pagination>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal fade" id="loginPopUp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Login Required</h4>
+                    </div>
+                    <div class="modal-body">
+                        Please login into the system to create content.
+                    </div>
+                    <div class="modal-footer">
+                        <section id="loginFormPopUp">
+                            @using (Ajax.BeginForm("Login", "Account", FormMethod.Post, new AjaxOptions { OnBegin = "return CheckValidation();" }))
+                            {                                
+                                    @Html.ActionLink("Login", "Login", "Account", new { area = "" }, new { @class = "btn btn-primary" })                               
+                            }
+                        </section>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>

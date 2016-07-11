@@ -1,0 +1,60 @@
+﻿@using LearningCenter.DomainModel.Models.Account
+@model LearningCenter.DomainModel.Models.Account.LoginViewModel
+@{
+    ViewBag.Title = "Admin Login ";
+}
+@{
+    Layout = null;
+}
+
+
+
+<div class="row">
+    <div class="col-md-8 col-xs-offset-2 text-center">
+
+        <h2>@ViewBag.Title</h2>
+        
+        <section id="loginForm">
+            @using (Html.BeginForm("SignIn", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <span class="text-danger">@ViewBag.Message</span>
+                <br />
+                // @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label"><label class="error">*</label>Email:</label>
+                        @*@Html.LabelFor(m => m.Email, new { @class = "col-md-4 control-label" })*@
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @*@Html.LabelFor(m => m.Password, new { @class = "col-md-4 control-label" })*@
+                        <label class="col-md-4 control-label"><label class="error">*</label>Password:</label>
+                        <div class="col-md-8">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                   
+                    <div class="form-group">
+                        <div class="col-md-offset-4 col-md-8">
+                            <input type="submit" value="Log in" class="btn btn-primary btn-sm btn-block" />
+                        </div>
+                    </div>
+                   
+                </div>
+            }
+        </section>
+     
+    </div>
+</div>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryval")
+@Styles.Render("~/Content/css")
+@Scripts.Render("~/bundles/modernizr")
+
+@Scripts.Render("~/bundles/bootstrap")
+

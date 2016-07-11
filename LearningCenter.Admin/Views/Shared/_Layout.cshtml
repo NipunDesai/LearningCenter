@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/Style.css" rel="stylesheet" />
+    @Styles.Render("~/Content/ngToast.min.css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+        @Scripts.Render("~/Scripts/angular.js",
+                        "~/Scripts/angular-resource.js",
+                        "~/Scripts/angular-route.js",
+                        "~/Scripts/angular-ui/ui-bootstrap-tpls.js",
+                        "~/Scripts/angular-animate.min.js",
+                        "~/Scripts/angular-sanitize.min.js",
+                         "~/Scripts/ngToast.min.js")
+
+        @Scripts.Render(
+        
+                        "~/Scripts/app/app.js",
+                        "~/Scripts/app/StringConstants.js",
+                        "~/Scripts/app/models/UserInvitee.js",
+                        "~/Scripts/app/controllers/UserController.js",
+                        "~/Scripts/app/services/UserService.js"
+                        )
+                       
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+            </div>
+            <div class="navbar-collapse collapse">
+                @*<ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                        <li>@Html.ActionLink("About", "About", "Home")</li>
+                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    </ul>*@
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        <ng-view></ng-view>
+        @RenderBody()        
+    </div>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
+@*DIALOG for exception*@
+<script type="text/ng-template" id="catchMessage">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true" ng-click="closeDeleteDialogBox()">&times;</span><span class="sr-only">Close</span></button>
+
+        </div>
+        <div class="modal-body text-center">
+            <p>{{exceptionMessage}}</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="closeDeleteDialogBox()">Ok</button>
+        </div>
+    </div>
+</script>

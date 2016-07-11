@@ -1,0 +1,131 @@
+﻿<div ng-controller="eLearningContentController">
+    <toast class="toaster-div"> </toast>
+    <div ng-hide="viewContentDetails">
+        <div class="navbar">
+        <input type="button" class="btn btn-success" value="Create New Course" ng-click="handleCreateELearningEvent()" />
+            <input type="button" class="btn btn-success" ng-show="mycontentDisplayButton" value="Show Only My Courses" ng-click="getAllMyContentsList()" />
+            <input type="button" class="btn btn-success" ng-hide="mycontentDisplayButton" value="Show All" ng-click="eLearningContentList()" />
+
+            <div class="pull-right print-div">
+                <a id="lnkPrintPage" onclick=" window.print() " title="print">
+                    <i class="social print"></i>
+                </a>
+                <!--<pre>{{fblink}}/ELearning</pre>-->
+                <a href="{{fblink}}/ELearning" type="icon_link" title="Click to share this post on Facebook" target="_blank">
+                    <i class="social facebook"></i>
+                </a>
+                <a href="{{maillink}}/ELearning" id="ctl00_cph_rptcontents_ctl01_lnkMailTo" title="Email">
+                    <i class="social email"></i>
+                </a>
+                <a href="{{twitterlink}}/ELearning" id="ctl00_cph_rptcontents_ctl01_TwitterShare" type="icon_link" target="_blank" title="Click to share this post on Twitter">
+                    <i class="social twitter"></i>
+                </a>
+            </div>
+        </div>
+        <div>
+            <div class="input-group" style="width: 850px;float:left">
+                <span class="input-group-addon">Search</span>
+                <!--<input type="text" class="form-control" placeholder="Search" ng-model="search" ng-change="filter()" style="min-width: 800px;">-->
+                <input type="text" class="form-control" ng-model="search" ng-change="filter()" placeholder="Search" style="min-width: 800px;" /><br />
+             </div>
+            <div style="float:right">
+                Show <select ng-model="itemsPerPage">
+                         <option value="10">10</option>
+                         <option value="50">50</option>
+                         <option value="100">100</option>
+                         <option value="150">150</option>
+                         <option value="200">200</option>
+                     </select> Records
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="container border m-t10">
+            <h4>Course Result</h4>
+            <hr />
+            <div class="media-list">
+                <div ng-init="eLearningContentList()">
+                    <div class="alert alert-success text-center" role="alert" ng-show="contentErrorMessageDisplay">
+                        {{errorMessage}}
+                    </div>
+                    <div id="busyindicator" class="busy-indicator" ng-show="isLoading">
+                        <img src="../Images/Loading.GIF" />
+                    </div>
+                    <div class="border m-t10" ng-repeat="content in totalCollection = (eLearningContentCollection | filter:search) | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit">
+                        <!--<li ng-repeat="content in totalCollection = (eLearningContentCollection | filter:search) | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit">{{data.name}}</li>-->
+                        <div id="printThis">
+                            <div class="media-heading">
+                                <h4 class="pull-left m-0">{{content.Title}}</h4>
+                                <div ng-if="content.IsDeleteOnly">
+                                    <div class="pull-right">
+                                        <a ng-click="editELearningContent(content.ContentId)" class="edit-delete-icon" title="Edit"><i class="glyphicon glyphicon-edit"></i></a>
+                                        <a ng-click="deleteConfirmationDialog(content.ContentId)" class="edit-delete-icon" title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
+                                    </div>
+                                </div>
+                                <div class="clearfix"> </div>
+                            </div>
+                            <div class="p-5">
+                                <div>
+                                    <a class="pull-left" href="#">
+                                        <img class="media-object" ng-src="{{content.ContentImage}}" style="width: 90px; height: 100px;">
+                                    </a>
+                                    <div class="media-body">
+                                        <p>{{content.Description}}</p>
+                                        <p>Posted By : {{content.CreatedBy}} on {{content.CreatedDateTime}}  <a class="text-primary" ng-click="viewCreatorDetails(content.UserId)" tooltip="Profile for user {{content.CreatedBy}}">Read more..</a></p>
+                                        <button class="btn btn-danger" ng-click="contentDetail(content.ContentId)" tooltip="{{content.Title}}" tooltip-append-to-body="true">View Course</button>
+                                        <button class="btn btn-success" ng-if="content.IsInteractiveOnly" ng-click="getAllInteractiveQuestions(content.ContentId)" tooltip-append-to-body="true" tooltip="{{content.Title}}">View Interactive</button>
+                                        <button ng-show="content.IsInteractiveResultOnly" class="btn btn-default" ng-click="getInteractiveResult(content.ContentId)" tooltip-append-to-body="true" tooltip="{{content.Title}}">Interactive Result</button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="panel panel-primary">
+                                    <div class="pull-left m-t5 rating">
+                                        <rating ng-model="content.Rate" max="max" readonly="!content.IsReadonly" on-hover="hoveringOver(value, content)" on-leave="overStar = null"></rating>
+                                    </div>
+                                    <div class="pull-right socila_div m-t3">
+                                        <a href="{{fblink}}/ELearning/ViewCourse/{{content.ContentId}}" type="icon_link" title="Click to share this post on Facebook" target="_blank">
+                                            <i class="social facebook"></i>
+                                        </a>
+                                        <a href="{{maillink}}/ELearning/ViewCourse/{{content.ContentId}}" id="ctl00_cph_rptcontents_ctl01_lnkMailTo" title="Email">
+                                            <i class="social email"></i>
+                                        </a>
+
+                                        <a href="{{twitterlink}}/ELearning/ViewCourse/{{content.ContentId}}" id="ctl00_cph_rptcontents_ctl01_TwitterShare" type="icon_link" target="_blank" title="Click to share this post on Twitter">
+                                            <i class="social twitter"></i>
+                                        </a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div ng-show="totalCollection.length >0 && results.length != 0" style="text-align:center">-->
+                
+                <div ng-show="totalCollection.length >0" style="text-align:center">
+                    <pagination total-items="totalItems" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" boundary-links="true"></pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    
+</div>
+
+<!--dialog for profile creation-->
+<script type="text/ng-template" id="createcontent">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true" ng-click="closeContentCreateDialogBox()">&times;</span>
+            <span class="sr-only">Close</span></button>
+
+        </div>
+        <div class="modal-body text-center">
+            <p>You have to complete your profile to create a new course  </p>
+            <p>For Profile <a ng-click="redirectToProfilePage()" class="text-danger"> click here </a> </p>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="closeDeleteDialogBox()">Ok</button>-->
+        </div>
+    </div>
+</script>

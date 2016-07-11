@@ -1,0 +1,152 @@
+﻿@using System.Collections
+@using LearningCenter.DomainModel.Models
+@using LearningCenter.Utility.GlobalUtilities
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<div>
+  
+    @if (Model == null)
+    {
+      
+    <div class="alert alert-success text-center" role="alert" >
+        @ViewBag.ErrorMessage
+    </div>
+    }
+    else
+    {
+        foreach (var item in Model)
+        {
+            // ViewBag.ErrorMessage
+            <div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        @if (@item.ContentImageGuid == null)
+                        {
+                            <img src="../../Images/Content-Default.png" style="width: 60%" />
+                        }
+                        else
+                        {
+                            <img src="@AppSettingsUtil.ContentPicturesPath/@item.Id/@item.ContentImageGuid" style="width: 60%" />
+                        }
+                        <br />
+                        <br />
+                        <div class="row">
+                            <div class="col-sm-3 view-content">
+                                @if (@item.User.ProfilePicGuid == null)
+                                {
+                                    <img src="../../Images/up.png" class="img-rounded img-thumbnail" />
+
+                                }
+                                else
+                                {
+                                 
+                                    <img src="@item.User.ProfilePicGuid" class="img-rounded img-thumbnail" />
+                                 //   userDetails.ProfilePicGuid == null ? null : ((userDetails.ProfilePicGuid.Contains("http://") || userDetails.ProfilePicGuid.Contains("https://")) ? userDetails.ProfilePicGuid : AppSettingsUtil.ProfilePicturesPath + userDetails.Id + '/' + userDetails.ProfilePicGuid);
+
+                                }
+                            </div>
+                            <div class="col-sm-9" style="padding-left: 0">
+                                <h4>Posted By <a class="text-danger" data-toggle="modal" data-target="#viewDetailsPopUp">@item.CreatedOn</a></h4>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="col-sm-9">
+                        <h2 class="text-success">@item.Title</h2>
+                        <p>@item.Description</p>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-8">
+                        <div>
+                            @foreach (var leacture in @item.ELearningLecture)
+                            {
+                                <div>
+                                    <div class="panel-collapse">
+                                        <div class="panel-body content-main">
+                                            <span class="panel-title">@leacture.Title</span>
+                                            <a class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isCollapsed, 'glyphicon-chevron-right': !isCollapsed}" ng-click="isCollapsed = !isCollapsed"></a>
+                                        </div>
+                                    </div>
+                                    <div collapse="!isCollapsed">
+                                        @foreach (var eLearningSection in @leacture.ELearningSection)
+                                        {
+                                            <div>
+                                                <div class="well well-lg">@eLearningSection.Title </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="list-group content-right">
+                            <h4> More info</h4>
+                            <div class="list-group-item">
+                                Rating
+                                <div class="pull-right m-t5 rating">
+                                    @for (int i = 0; i < @item.Rate; i++)
+                                    {
+                                        <i class="glyphicon glyphicon-star"></i>
+                                    }
+                                    </div>
+                            </div>
+                            <div class="list-group-item">
+                                Posted Date <span class="pull-right">@item.CreatedDateTime</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="viewDetailsPopUp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Creator Details</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    @*<img src="@AppSettingsUtil.ProfilePicturesPath/@item.User.Id/@item.User.ProfilePicGuid" class="img-circle" />*@
+                                    @if (@item.User.ProfilePicGuid == null)
+                                    {
+                                        <img src="../../Images/up.png" class="img-circle" />
+
+                                    }
+                                    else
+                                    {
+
+                                        <img src="@item.User.ProfilePicGuid" class="img-circle" />
+                                        //   userDetails.ProfilePicGuid == null ? null : ((userDetails.ProfilePicGuid.Contains("http://") || userDetails.ProfilePicGuid.Contains("https://")) ? userDetails.ProfilePicGuid : AppSettingsUtil.ProfilePicturesPath + userDetails.Id + '/' + userDetails.ProfilePicGuid);
+
+                                    }
+
+                                </div>
+                                <div class="col-lg-5">
+                                    <h4>@item.User.FirstName @item.User.LastName</h4>
+                                    <label>Age: @item.User.Age</label>
+                                    <p>@item.User.Education</p>
+                                    <p>@item.User.Institute</p>
+                                </div>
+                                <div class="col-lg-4">
+                                    <p class="share_link"><a>@item.User.FacebookLink</a></p>
+                                    <p class="share_link"><a>@item.User.TwitterLink</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+    }
+   
+</div>

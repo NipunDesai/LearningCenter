@@ -1,0 +1,162 @@
+﻿<div ng-controller="interactiveController">
+    <div ng-init="getAllInteractiveQuestion()">
+        <br/>
+        <div class="alert alert-success text-center" role="alert" ng-show="intrectiveNoDataFoundMessage">
+            {{errorMessage}}
+        </div>
+
+        <div ng-hide="intrectiveNoDataFoundMessage">
+
+            <div id="busyindicator" class="busy-indicator" ng-show="interactiveResultLoading">
+                <img src="../Images/Loading.GIF" />
+            </div>
+            <div class="p-10">
+                <button class="btn btn-success" ng-hide="userInteractiveResult" ng-click="getAllUserName()">Student Interactive Result</button>
+                <button class="btn btn-success" ng-show="userInteractiveResult" ng-click="getInteractiveResult()"> Interactive Result</button>
+            </div>
+            <div class="container border" ng-hide="userInteractiveResult">
+                <h3> Interactive Results According to Question</h3>
+                <hr />
+                <div class="media-list">
+                    <div class="border m-t10">
+
+                        <div class="panel-collapse">
+                            <div class="alert alert-success text-center" role="alert" ng-show="nullInteractiveResult">
+                                {{errorMessage}}
+                            </div>
+                            <div class="media-heading">
+                                <h4 class="pull-left m-0">{{ContentTitle}}</h4>
+                                <div class="clearfix"></div>
+                            </div>
+                            <!--<div><i class="glyphicon glyphicon-refresh glyphicon-refresh-animate center-block" ng-show="questionResultLoding"></i></div>-->
+
+                            <div class="pos_rel">
+                                <div ng-show="questionResultLoding" class="absolute-fullElement text-center disabled-overlay">
+                                    <h1 class="loader-center"><i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i></h1>
+                                </div>
+                                <div ng-repeat="interactive in interactiveQuestionCollection" class="content-div">
+
+                                    <div class="panel-body">
+                                        <div class="que-sec">
+                                            <div class="que-tab">
+                                                <a class="pull-left" ng-hide="interactive.isCollapsed" ng-click="getInteractiveQuestionById(interactive.InteractiveQuestionId)"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;</a>
+                                                <a class="pull-left" ng-show="interactive.isCollapsed" ng-click="getInteractiveQuestionById(interactive.InteractiveQuestionId)"><i class="glyphicon glyphicon-minus-sign"></i>&nbsp;</a>
+                                                <p class="panel-title m-t-2">{{interactive.Option}}</p>
+                                            </div>
+                                            <table class="table" ng-show="interactive.isCollapsed">
+                                                <thead>
+                                                    <tr>
+                                                        <th>User Name</th>
+                                                        <th>IsCorrect</th>
+                                                        <th>Answer</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="interactiveOption in interactive.ResultAc">
+                                                        <td> {{interactiveOption.UserName}}</td>
+                                                        <td ng-show="interactiveOption.IsCorrect">
+                                                            <i class="glyphicon glyphicon-ok green">
+                                                            </i>
+                                                        </td>
+                                                        <td ng-hide="interactiveOption.IsCorrect">
+                                                            <i class="glyphicon glyphicon-remove red"></i>
+                                                        </td>
+                                                        <td>
+                                                            <label ng-repeat="option in interactiveOption.OptionAc" class="ans-label">
+                                                                <span> {{option.Option}}</span>
+                                                            </label>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="alert alert-success text-center" role="alert" ng-show="interactive.IsError">
+                                                {{errorMessage}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <br />
+                <br />
+            </div>
+
+
+            <div class="container border" ng-show="userInteractiveResult">
+                <h3> Interactive Results According to Student</h3>
+                <hr />
+                <div class="panel-collapse">
+                    <div class="media-heading">
+                        <h4 class="pull-left m-0">{{ContentTitle}}</h4>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="pos_rel">
+                        <div ng-show="studentResultLoding" class="absolute-fullElement text-center disabled-overlay">
+                            <h1 class="loader-center"><i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i></h1>
+                        </div>
+                        <div ng-repeat="getUser in getAllUserCollection" class="content-div">
+                            <div class="panel-body">
+                                <div class="que-sec">
+                                    <div class="que-tab">
+                                        <a class="pull-left" ng-hide="getUser.isCollapsed" ng-click="getInteractiveResultByUserId(getUser.UserId)"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;</a>
+                                        <a class="pull-left" ng-show="getUser.isCollapsed" ng-click="getInteractiveResultByUserId(getUser.UserId)"><i class="glyphicon glyphicon-minus-sign"></i>&nbsp;</a>
+                                        <p class="panel-title m-t-2">{{getUser.UserName}}</p>
+                                    </div>
+
+                                    <table class="table" ng-show="getUser.isCollapsed">
+                                        <thead>
+                                            <tr>
+                                                <th>Question</th>
+                                                <th>IsCorrect</th>
+                                                <th>Answer</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="interactiveResult in getUser.ResultAc">
+                                                <td>
+                                                    {{interactiveResult.QuestionText}}
+                                                </td>
+                                                <td ng-show="interactiveResult.IsCorrect">
+                                                    <i class="glyphicon glyphicon-ok green">
+                                                    </i>
+                                                </td>
+                                                <td ng-hide="interactiveResult.IsCorrect">
+                                                    <i class="glyphicon glyphicon-remove red"></i>
+                                                </td>
+                                                <td>
+                                                    <label ng-repeat="option in interactiveResult.OptionAc" class="ans-label">
+                                                        <span ng-class="{'glyphicon glyphicon-ok':option.IsCorrect == true}"> {{option.Option}}</span>
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="alert alert-success text-center" role="alert" ng-show="getUser.IsError">
+                                        {{errorMessage}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <br />
+            </div>
+            
+
+        </div>
+    </div>
+    </div>
+
+
+<!--<div class="media-list">
+    <div class="border m-t10">
+        <div class="media-heading">
+            <h4 class="pull-left m-0">Content</h4>
+        </div>
+    </div>
+</div>-->

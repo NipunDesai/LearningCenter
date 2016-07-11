@@ -1,0 +1,249 @@
+﻿
+<div ng-controller="profileController">
+    <div ng-show="errorMsgDisplay">
+        <p class="error align-center m-t20" >No data found.</p>
+    </div>
+    <div ng-hide="errorMsgDisplay">
+        <form id="profile-form" class="form-horizontal" name="profileform" role="form" data-ng-init="getAllUserInfo()" novalidate ng-submit="profileform.$valid && saveUserInfo($event)">
+         {{profileform.$valid}}
+            <div class="form-group m-t20">
+                <label for="firstname" class="col-sm-2 control-label"><label class="error">*</label>First Name:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="firstname" ng-model="user.FirstName" name="firstname" maxlength="50"
+                           placeholder="Enter First Name" required />
+                    <span class="error" ng-show="profileform.firstname.$error.required && submitted ">FirstName is required</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lastname" class="col-sm-2 control-label"><label class="error">*</label>Last Name:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="lastname" maxlength="50" ng-model="user.LastName"
+                           placeholder="Enter Last Name" name="lastname" required />
+                    <span class="error" ng-show="profileform.lastname.$error.required && submitted ">LastName is required</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="dateofbirth" class="col-sm-2 control-label">Date Of Birth:</label>
+                <div class="col-sm-10">
+                    <p class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="user.DateOfBirth" is-open="opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" ng-required="false"  readonly/>
+
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="openDatePicker($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="gender" class="col-sm-2 control-label">Gender:</label>
+                <div class="col-sm-10">
+                    <input type="radio" ng-model="user.Gender" value="male" />Male
+                    <input type="radio" ng-model="user.Gender" value="female" />Female
+
+                </div>
+            </div>
+
+            <!--<div class="form-group">
+            <label for="country" class="col-sm-2 control-label"><label class="error">*</label>Country:</label>
+            <div class="col-sm-10">
+                <select ng-options="country.CountryIsoCode as country.name for country in countryCollection" class="form-control" ng-change="selectAnyCountry(country)" ng-model="country">
+                    <option style="display:none" value="">Select a Country</option>
+                </select>
+                <span ng-show="form.country.$error.required && submitted" class="error">Country is required</span>
+            </div>
+        </div>-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Location:</label>
+
+                <div class="col-sm-10">
+
+                    <google-places location=location></google-places>
+                    <!--<div class="abc" id="xyz" style="width:300px" ng-autocomplete="result2" details="details2" options="options2" tooltip="Add City from auto-suggested option" tooltip-placement="right">
+
+                </div>-->
+                    <!--<div ng-show="noRecordFoundbit">
+                    <span class="error">No record found</span>
+                </div>
+
+                <div ng-if="submitted && !noRecordFoundbit && result2 == ''">
+                    <p class="error">City is required</p>
+                </div>-->
+                </div>
+
+            </div>
+
+            <!--<div class="form-group" ng-hide="cityAutoCompleteTextBox">
+            <label class="col-sm-2 control-label"><label class="error">*</label>City:</label>
+
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="city" ng-model="user.City" name="city"
+                       placeholder="Please select Country first" disabled>
+
+            </div>
+
+        </div>-->
+            <!--<div class="form-group">
+            <label for="age" class="col-sm-2 control-label">Age:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="age" ng-model="user.Age" name="age"
+                       placeholder="Enter Age" ng-pattern="/^[0-9]{1,3}$/" tooltip="Enter your current Age(in years)" tooltip-placement="right">
+                <p ng-show="form.age.$error.pattern && form.age.$dirty" class="error">Not valid Age</p>
+                <p ng-show="form.age.$error.required && submitted " class="error">Age is required</p>
+            </div>
+        </div>-->
+            <div ng-show="user.LoginProvider == 'google' || user.LoginProvider == undefined">
+                <div class="form-group">
+                    <label for="education" class="col-sm-2 control-label">Education:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="education" ng-model="user.Education" maxlength="100" 
+                               placeholder="Enter Education" name="education" tooltip="Enter Education" tooltip-placement="right">
+                        <!--<p ng-show="form.education.$error.required && submitted " class="error">Education is required</p>-->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="currentJob" class="col-sm-2 control-label">Company Name:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="CompanyName" ng-model="user.CompanyName" maxlength="100"
+                               placeholder="Enter Company Name " name="CompanyName" tooltip="Enter your Company Name in which you currently work" tooltip-placement="right">
+                        <!--<p ng-show="form.CompanyName.$error.required && submitted " class="error"> Company Name is required</p>-->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="currentJob" class="col-sm-2 control-label">Job Title:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="jobTitle" ng-model="user.JobTitle" maxlength="150"
+                               placeholder="Enter Job Title" name="jobTitle" tooltip="Enter your current job Title(Designation)" tooltip-placement="right">
+                        <!--<p ng-show="form.jobTitle.$error.required && submitted " class="error"> job title is required</p>-->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="experience" class="col-sm-2 control-label">Experience:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="experience" ng-model="user.Experience"
+                               placeholder="Enter Experience" name="experience" ng-pattern="/^\d+(?:\.\d{1,2})?$/" tooltip="Enter your work Experience(in years)" tooltip-placement="right">
+                        <!--<p ng-show="form.experience.$error.required && submitted " class="error">Experience is required</p>-->
+                        <p ng-show="form.experience.$error.pattern && form.experience.$dirty" class="error">Not a valid experience</p>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-show="user.LoginProvider == 'facebook' ">
+                <div class="form-group">
+                    <div ng-if="fbEducation.length != '0'"><label for="education" class="col-sm-2 control-label">Education:</label></div>
+                    <div ng-repeat="education in fbEducation">
+                        <label>{{education.type}}</label> :- <label>{{education.school.name}}</label>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div ng-if="fbExperience.length != '0'"> <label for="experience" class="col-sm-2 control-label">Experience:</label></div>
+                        <div ng-repeat="experience in fbExperience">
+                            <div ng-if="experience.end_date == null">
+                                <label style="font-style:normal">Working in {{experience.employer.name}} as a {{experience.position.name}} in {{experience.location.name}}</label>
+                            </div>
+                            <div ng-if="experience.end_date != null">
+                                <label>Worked in {{experience.employer.name}} as a {{experience.position.name}} in {{experience.location.name}}</label>
+                            </div>
+                        </div>
+                    </div>
+                <div class="form-group">
+                    <div ng-if="fbSkills.length != '0'"> <label for="skills" class="col-sm-2 control-label">Professional Skills:</label></div>
+                    <div ng-repeat="skill in fbSkills">
+                        <label>{{skill.SkillsValue}}</label> 
+
+                    </div>
+                </div>
+            </div>
+
+            <div ng-show="user.LoginProvider == 'linkedin' ">
+               
+                <div class="form-group">
+                    <div ng-if=" linkedinEducation.length != '0'"><label for="education" class="col-sm-2 control-label">Education:</label></div>
+                    <div ng-repeat="education in  linkedinEducation">
+                        <label>Studied {{education.Degree}}</label> <label> in  {{education.FieldOfStudy}} field </label> <label> at {{education.SchoolName}}</label>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div ng-if="linkedinExperience.length != '0'"> <label for="experience" class="col-sm-2 control-label">Experience:</label></div>
+                    <div ng-repeat="experience in linkedinExperience">
+                        <div ng-if="experience.IsCurrent == true">
+                            <label >Working in {{experience.Company}} </label>
+                        </div>
+                        <div ng-if="experience.IsCurrent == false">
+                            <label>Worked in {{experience.Company}} </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div ng-if="linkedinSkills.length != '0'"> <label for="skills" class="col-sm-2 control-label">Professional Skills:</label></div>
+                    <div ng-repeat="skill in linkedinSkills">
+                        <label>{{skill.SkillsValue}}</label>
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="facebook" class="col-sm-2 control-label">Facebook Profile Link:</label>
+                <div class="col-sm-2"><label>https://www.facebook.com/</label></div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="facebook" ng-model="user.FacebookLink" name="facebook"
+                           placeholder="Enter Facebook Profile Link" tooltip="Enter Facebook Profile link" tooltip-placement="right">
+
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="twitter" class="col-sm-2 control-label">Twitter Handler:</label>
+                <div class="col-sm-2"><label>https://www.twitter.com/</label></div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="twitter" ng-model="user.TwitterLink"
+                           placeholder="Enter Twitter contact link" name="twitter" tooltip="Enter Twitter contact link" tooltip-placement="right">
+
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="profilePic" class="col-sm-2 control-label">Profile Picture:</label>
+                <div class="col-sm-10">
+                    <div class="btn btn-primary uploadify_span" tooltip="You can upload a .jpg,.jpeg,.png,.gif file (File size limit is 8 MB)." tooltip-placement="right">
+                        <span> Choose File</span>
+                        <input type="file" class="uploadify" ng-file-select="onFileSelect($files)" accept="{{fileType}}" />
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"></label>
+                <div class="col-sm-10">
+                    <div class="pos_rel img-div">
+                        <img class="media-object" ng-src="{{profilePic}}">
+                        <a ng-click="deleteImage(profilePic)" class="pos_abs cross close_cross glyphicon glyphicon-remove-circle"></a>
+                    </div>
+                    <label class="error" ng-show="unsupportedFileTypeFlag">{{unsupportedFileTypeMsg}}</label>
+                    <label class="error" ng-show="unsupportedFileSizeFlag">{{unsupportedFileSizeMsg}}</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="twitter" class="col-sm-2 control-label">About Me:</label>
+
+                <div class="col-sm-10">
+                    <textarea class="form-control" id="twitter" ng-model="user.AboutMe" rows="5" cols="20"></textarea>
+
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" class="btn btn-primary" ng-click="saveUserInfo(profileform.$valid)">Submit</button>
+                    <a href="#/CourseList"> <input type="button" class="btn btn-default m-l15" value="Cancel" /></a>
+                </div>
+            </div>
+        </form>
+        <div id="busyindicator" class="busy-indicator" ng-show="loadingFlag">
+            <img src="../Images/Loading.GIF" />
+        </div>
+    </div>
+</div>
+
+

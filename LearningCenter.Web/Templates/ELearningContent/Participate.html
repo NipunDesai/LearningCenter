@@ -1,0 +1,55 @@
+﻿<!--<pre>{{mytree.currentNode.parent}}</pre>
+    <pre>{{mytree.currentNode.AlreadyExits}}</pre>
+    <pre>{{ mytree.currentNode.CurrentUser}}</pre>-->
+<div ng-controller="interactiveController">
+    <div ng-init="getAllInteractiveQuestions()">
+        <div class="container border">
+            <h3> Interactive Board</h3>
+
+            <hr />
+            <div class="alert alert-success text-center" role="alert" ng-show="interactiveErrorMessageDisplay">
+                {{errorMessage}}
+            </div>
+
+            <div class="border m-t10" ng-hide="interactiveErrorMessageDisplay">
+                <div id="busyindicator" class="busy-indicator" ng-show="interactiveLoading">
+                    <img src="../Images/Loading.GIF" />
+                </div>
+
+                <div class="content-div">
+                    <div class="media-heading">
+                        <h4 class="pull-left m-0">{{ContentTitle}}</h4>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="pos_rel">
+                        <div ng-show="participatePartLoding" class="absolute-fullElement text-center disabled-overlay">
+                            <h1 class="loader-center"><i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i></h1>
+                        </div>
+                        <div ng-repeat="tree in treeCollection">
+                            <div>
+                                <a class="pull-left" ng-hide="tree.isCollapsed"><i class="glyphicon glyphicon-plus-sign" ng-click="viewIntrectivePortionByIntrectiveQuestionId(tree.id)"></i>&nbsp;</a>
+                                <a class="pull-left" ng-show="tree.isCollapsed"><i class="glyphicon glyphicon-minus-sign" ng-click="viewIntrectivePortionByIntrectiveQuestionId(tree.id)"></i>&nbsp;</a>
+                                <p class="panel-title m-t-2">{{tree.name}}</p>
+                            </div>
+                            <div ng-show="tree.isCollapsed" class="clearfix">
+                                <div data-angular-treeview="true"
+                                     class="tree-view"
+                                     data-tree-id="mytree"
+                                     data-tree-model="treeViewCollection"
+                                     data-node-id="id"
+                                     data-node-label="name"
+                                     data-node-children="children">
+                                </div>
+
+                                <div ng-if="mytree.currentNode.CurrentUser == true">
+                                    <button class="btn btn-success btn-sm col-md-2" ng-click="saveInteractiveResult(mytree.currentNode.id)">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,14 @@
+﻿/*=== LearningCenter admin Style Sheet ===*/
+/*=== Common css ===*/
+
+.error {color: #ED312D;font-size: 12px;font-weight: normal!important;}
+.success {color:green;font-size: 12px;font-weight: normal!important;}
+
+/*Loader*/
+.busy-indicator {position: fixed;top: -8px;bottom: 0;right: 0;left: 0;z-index: 10000;background-color:rgba(0,0,0,0.5);}
+.busy-indicator img {position: fixed; top: 50%;left: 50%;}
+.busy-indicator.pos-abs {position: absolute !important;}
+.busy-indicator.pos-abs img {position: absolute !important;top: 200px;}
+
+/*toaster*/ 
+.toaster-div{top:-60px!important;position:relative!important;right: -90px!important;}

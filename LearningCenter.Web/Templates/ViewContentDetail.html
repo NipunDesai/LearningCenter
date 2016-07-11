@@ -1,0 +1,73 @@
+﻿<div ng-controller="eLearningContentController">
+    <div ng-init="viewContentDetail()">
+        <div id="busyindicator" class="busy-indicator" ng-show="contentLoading">
+            <img src="../Images/Loading.GIF" />
+        </div>
+        <br/>
+        <div class="alert alert-success text-center" role="alert" ng-show="contentDetailErrorMessageDisplay">
+            {{errorMessage}}
+        </div>
+        <div ng-repeat="content in contentCollection">
+            <br />
+            <div class="row">
+                <div class="col-sm-3">
+                    <img ng-src="{{content.ContentImage}}" style="width: 60%" />
+                    <br/><br />
+                    <div class="row">
+                        <div class="col-sm-3 view-content"><img ng-src="{{content.UserImageGuid}}" class="img-rounded img-thumbnail"/></div>
+                        <div class="col-sm-9" style="padding-left: 0">
+                            <h4>
+                                Posted By
+                                <a class=" text-danger" ng-click="viewCreatorDetails(content.UserId)" tooltip="Profile for user {{content.CreatedBy}}">
+                                    {{content.CreatedBy}}
+                                </a>
+                            </h4>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="col-sm-9">
+                    <h2 class="text-success">{{content.Title}}</h2>
+                    <p>{{content.Description}}</p>
+
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-8">
+                    <div>
+                        <div ng-repeat="leacture in content.ELearningLecture">
+                            <div class="panel-collapse">
+                                <div class="panel-body content-main">
+                                    <button type="button" class="btn btn-default" style="padding:2px 5px;" ng-click="openELearningLecturePage(content.ContentId,leacture.ELearningLectureId)"><i class="glyphicon glyphicon-play"></i></button>
+                                    <span class="panel-title">{{leacture.Title}}</span>
+                                    <a class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': !isCollapsed, 'glyphicon-chevron-right': isCollapsed}" ng-click="isCollapsed = !isCollapsed"></a>
+                                </div>
+                            </div>
+                            <div collapse="isCollapsed">
+                                <div ng-repeat="section in leacture.ELearningSection">
+                                    <div class="well well-lg" ng-click="eLearningSectionDetailById(section.ELearningSectionId)">{{section.Title}}  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="list-group content-right">
+                        <h4> More info</h4>
+                        <div class="list-group-item">
+                            Rating
+                            <div class="pull-right m-t5 rating">
+                                <rating ng-model="content.Rate" max="max" readonly="!content.IsReadonly" on-hover="hoveringOver(value, content)" on-leave="overStar = null"></rating>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            Posted Date <div class="pull-right">{{content.CreatedDateTime}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

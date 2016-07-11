@@ -1,0 +1,126 @@
+﻿@model LearningCenter.DomainModel.Models.Account.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+@if (Model.IsValidToken)
+{
+    <div class="error text-center">
+        @ViewBag.meaasge
+    </div>
+
+}
+else
+{
+    <div class="col-md-8 col-xs-offset-2 text-center">
+        <h2>Create a new account</h2>
+
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <hr />
+            @*<p class="error">
+                    @Html.ValidationSummary(true, "", new { @class = "error" })
+                </p>*@
+            @Html.HiddenFor(m => m.IsCreator)
+            var result = ViewBag.Message as string;
+            if (!String.IsNullOrEmpty(result))
+            {
+                <p class="error">@result</p>
+            }
+            <div class="form-group">
+
+                <label class="col-md-4 control-label"><label class="error">*</label>First Name:</label>
+                <div class="col-md-8">
+                    @Html.TextBoxFor(m => m.FirstName, new { @maxlength = "50", @class = "form-control" })
+                    <p class="error">
+                        @Html.ValidationMessageFor(m => m.FirstName)
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+
+                <label class="col-md-4 control-label"><label class="error">*</label>Last Name:</label>
+                <div class="col-md-8">
+                    @Html.TextBoxFor(m => m.LastName, new { @maxlength = "5", @class = "form-control" })
+                    <p class="error">
+                        @Html.ValidationMessageFor(m => m.LastName)
+                    </p>
+                </div>
+            </div>
+            @*<div class="form-group">
+                    <label class="col-md-4"></label>
+                    <div class="col-md-8">
+                        <label class="pull-left" style="font-weight:normal">@Html.RadioButtonFor(m => m.UserRoles, "Individual", new { @checked = "checked", @class = "vertical" }) Individual</label>
+                        <label class="pull-left m-l5" style="font-weight:normal">@Html.RadioButtonFor(m => m.UserRoles, "Company", new { @class = "vertical" }) Company</label>
+                    </div>
+                </div>*@
+            <div class="form-group">
+
+                <label class="col-md-4 control-label"><label class="error">*</label>Email:</label>
+                <div class="col-md-8">
+                    @if (Model.IsCreator)
+                    {
+                        @Html.TextBoxFor(m => m.Email, new { @maxlength = "256", @class = "form-control", @readonly = "readonly" })
+                    }
+                    else
+                    {  @Html.TextBoxFor(m => m.Email, new { @maxlength = "256", @class = "form-control" })}
+
+                    <p class="error">
+                        @Html.ValidationMessageFor(m => m.Email)
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <label class="col-md-4 control-label"><label class="error">*</label>Password:</label>
+
+                <div class="col-md-8">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    <p class="error">
+                        @Html.ValidationMessageFor(m => m.Password)
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+
+                <label class="col-md-4 control-label"><label class="error">*</label>Confirm Password:</label>
+                <div class="col-md-8">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                    <p class="error">
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword)
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-4 col-md-8">
+                    <input type="submit" class="btn btn-primary btn_width" value="Register" />
+                    <a href="~/Home/Index"><input type="button" class="btn btn-default btn_width m-l15" value="Cancel" /> </a>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+
+                </div>
+            </div>
+        }
+
+        @if (Model.IsCreator)
+        {
+            using (Html.BeginForm("ExternalLogin", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <button type="submit" class="form-control btn linkedin" id="LinkedIn" name="provider" value="LinkedIn">
+                    <span class="col-xs-2" style="padding: 0;"><img src="~/Content/images/linkedin-32.png" /></span>
+                    <span class="col-xs-10 text-left">Sign in with LinkedIn</span>
+                </button>
+            }
+        }
+
+
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,27 @@
+register 
+
+firstname -50
+lastname - 50
+email - 256
+
+
+profile
+
+Education -100
+Company Name - 100 
+job title -150
+ 
+
+create e-learning content
+content title - 500
+lecture title -500
+section title -500
+section page:- topic name -500
+youtube url -200
+question title - 1000
+option title - 1000
+
+
+ <add name="ZanicuraDataContext" connectionString="Data Source=(localdb)\zanicura2;Initial Catalog=zanicura2;Integrated Security=True" providerName="system.data.sqlclient" />
+
+

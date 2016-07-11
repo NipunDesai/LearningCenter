@@ -1,0 +1,77 @@
+﻿@using LearningCenter.DomainModel.Models
+@using LearningCenter.DomainModel.Models.Account
+@model LearningCenter.DomainModel.Models.Account.LoginViewModel
+@{
+    ViewBag.Title = "Sign in";
+}
+
+<div class="row">
+    <div class="col-md-8 col-xs-offset-2 text-center">
+
+        <h2>@ViewBag.Title.</h2>
+        <section id="loginForm">
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <span class="text-danger">@ViewBag.Message</span>
+                
+                <br />
+                // @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label"><label class="error">*</label>Email:</label>
+                        @*@Html.LabelFor(m => m.Email, new { @class = "col-md-4 control-label" })*@
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @*@Html.LabelFor(m => m.Password, new { @class = "col-md-4 control-label" })*@
+                        <label class="col-md-4 control-label"><label class="error">*</label>Password:</label>
+                        <div class="col-md-8">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-4 col-md-8">
+                            <div class="pull-left check_box">
+                                @Html.CheckBoxFor(m => m.RememberMe)
+                                @Html.LabelFor(m => m.RememberMe)
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-4 col-md-8">
+                            <input type="submit" value="Log in" class="btn btn-primary btn-sm btn-block" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-4 col-md-8">
+                            @Html.ActionLink("Register as a new user", "Register", "Account", new { @class = "pull-left" })
+                        </div>
+                        <div class="col-md-offset-4 col-md-8">
+                            @Html.ActionLink("Forgot your password?", "ForgotPassword", "Account", new { @class = "pull-left" })
+                        </div>
+                    </div>
+                </div>
+                @* Enable this once you have account confirmation enabled for password reset functionality
+                    <p>
+                        @Html.ActionLink("Forgot your password?", "ForgotPassword")
+                    </p>*@
+            }
+        </section>
+
+        <div class="form-group" id="socialLoginForm">
+            <div class="col-md-offset-4 col-md-4">
+                @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

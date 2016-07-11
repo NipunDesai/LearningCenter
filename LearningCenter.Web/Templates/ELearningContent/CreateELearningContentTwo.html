@@ -1,0 +1,405 @@
+﻿<div class="steps" ng-controller="createELearningContentController">
+    <toast class="toaster-div" > </toast>
+    <div ng-show="isErrorMessage">
+        <p class="alert alert-success text-center m-t20">{{errorMessageString}}</p>
+    </div>
+    <div ng-hide="isErrorMessage">
+        <!--<label class="error" ng-show="validationMsgFlag">{{validationMsg}}</label>-->
+        <!--<p class="error" ng-show="errorMsgDisplay">{{errorMessage}}</p>-->
+        <div class="content_div m-t20" ng-init="getELearningLectureList()">
+            <!--display lecture list-->
+            <div ng-repeat="lecture in lectureList" class="created_div">
+                <div class="gray_head" id="addedlecture">
+                    <div class="header-h">
+                        <label class="vertical-top">Lecture {{$index + 1}} : </label>
+
+
+                        <!--<label>{{lectureTitle}}</label>-->
+                        <div class="show_inline" ng-hide="lecture.editLecturePanelHideAndShow">
+                            <span class="lectureLabel">{{lecture.Title}}</span>
+                            <label class="edit_delete">
+                                <a ng-click="editLectureTitle(lecture.Title,lecture.ELearningLectureId)" class="icon"><i class="glyphicon glyphicon-pencil" title="Edit"></i></a>
+                                <a ng-click="deleteLectureConfiramtionDialog(lecture.ELearningLectureId)" class="icon"><i class="glyphicon glyphicon-trash" title="Delete"></i></a>
+                            </label>
+
+                        </div>
+                        <!--edit lecture--> 
+                        <div class="show_inline" ng-show="lecture.editLecturePanelHideAndShow">
+                            <input type="text" class="textLecture textbox-edit " ng-model="eLearningLecture.EditTitle" ng-trim="false" maxlength="500" />
+                            <label class="display-inline font-small">
+                                {{500 - eLearningLecture.EditTitle.length}}/500
+                            </label>
+                            <label class="save_cncl m-l15">
+                                <a ng-click="updateLectureTitle(lecture.ELearningLectureId,eLearningLecture.EditTitle)" class="icon"><i class="glyphicon glyphicon-floppy-disk" title="Update"></i></a>
+                                <a ng-click="cancelLectureEdit(lecture.ELearningLectureId)" class="icon"><i class="glyphicon glyphicon-remove" title="Close"></i></a>
+                            </label>
+                            <div>
+                                <p ng-show="isEditLectureNameRequired" class="error">{{lectureNameRequiredMsg}}</p>
+                                <p ng-show="lectureEditNameExistFlag" class="error">{{lectureNameExistMsg}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--display section list-->
+                <div ng-repeat="section in lecture.ELearningSection">
+                    <div class="small_div content_header">
+                        <div class="sec_div">
+                            <!--<label>Section {{$index + 1}} : <span class="pull-left sectionLabel" style="font-size:18px;margin-right:5px">{{section.Title}}</span></label>-->
+                            <label class="pull-left sectionLabel" style="font-size:18px;margin-right:5px">Section {{$index+1}} :</label>
+
+                            <div class="show_inline" ng-hide="section.editSectionPanelHideAndShow">
+                                <span class="sectionLabel" style="font-size:18px;margin-right:5px">{{section.Title}}</span>
+                                <label class="edit_delete_sec">
+                                    <a ng-click="editSectionTitle(section.Title,section.ELearningSectionId)" class="icon1"><i class="glyphicon glyphicon-pencil" title="Edit"></i></a>
+                                    <a class="icon1" ng-click="deleteSectionConfiramtionDialog(section.ELearningSectionId)"><i class="glyphicon glyphicon-trash" title="Delete"></i></a>
+                                </label>
+                            </div>
+                            <!--edit section--> 
+                            <div class="show_inline" ng-show="section.editSectionPanelHideAndShow">
+                                <input type="text" class="textSection textbox-edit" maxlength="500" ng-trim="false" ng-model="eLearningSection.EditSectTitle" />
+                                <label class="display-inline font-small">
+                                    {{500 - eLearningSection.EditSectTitle.length}}/500
+                                </label>
+                                <label class="save_cncl_sec m-l15">
+                                    <a ng-click="updateSectionTitle(section.ELearningSectionId,eLearningSection.EditSectTitle)" class="icon1" title="Update"><i class="glyphicon glyphicon-floppy-disk"></i></a>
+                                    <a ng-click="cancelSectionEdit(section.ELearningSectionId)" class="icon1"><i class="glyphicon glyphicon-remove" title="Close"></i></a>
+                                </label>
+                                <div>
+                                    <p ng-show="isEditSectionNameRequired" class="error">{{sectionNameRequiredMsg}}</p>
+                                    <p class="error" ng-show="sectionEditNameExistFlag">{{sectionNameExistMsg}}</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-default btn-primary pull-right btn-sm" ng-click="addContent(section.ELearningSectionId)" ng-hide="addContentDisplay" ng-disabled="isInteractiveDisabled">Add Content</button>
+                            <div class="clearfix"></div>
+
+                        </div>
+
+                        <div class="type_div" id="addContentDiv" ng-show="section.ContentShowandHidebit">
+                            <div class="content_header">
+                                <a class="close" ng-click="closeaddContent(section.ELearningSectionId)" title="Close" ng-class="{'disabled':isInteractiveDisabled }">&times;</a>
+                                <ul class="options">
+                                    
+                                    <li ng-repeat="content in fileContentCollection" ng-if="!isInteractiveDisabled">
+                                        <a ng-click="contentclick(content.Type)" ng-class="{'label selected-li':content.fileSelectedbit == true}" tooltip="{{content.msg}}" tooltip-placement="top">
+                                            <i ng-class="content.Icon"></i>
+                                            <span>{{content.Title}}</span>
+                                        </a>
+                                    </li>
+                                    <li ng-repeat="content in fileContentCollection" ng-if="isInteractiveDisabled">
+                                        <a ng-click="contentclick(content.Type)" ng-class="{'disabled':content.fileSelectedbit == false,'label selected-li':content.fileSelectedbit == true}" tooltip="It is required to add atleast one Option" tooltip-placement="top">
+                                            <i ng-class="content.Icon"></i>
+                                            <span>{{content.Title}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+
+                                <!--image,video , text document upload area-->
+                                <div class="upload_div p-t3 pos_rel" ng-show="isImage">
+                                    <a class="close" ng-click="closeSectionPage()" title="Close">&times;</a>
+                                    <div class="form-group upload_div m-b20" ng-show="isImage">
+                                        <label class="col-sm-2 control-label"><label class="error">*</label>Topic Name:</label>
+                                        <div class="col-sm-5">
+                                            <input type="text" ng-model="textEditorContent.TopicName" maxlength="500" class="form-control pull-left" placeholder="Enter Topic Name for your section content" tooltip="{{tooltipMessage}}" tooltip-placement="bottom" />
+                                            <span class="error" ng-show="isTopicNameRequired">{{topicNameRequiredMSg}}</span>
+                                        </div>
+                                        <div class="col-sm-4" ng-hide="isVideo" style="margin-left: -60px;">
+                                            <div class="btn btn-primary uploadify_span pull-left m-l15" ng-disabled="textEditorContent.TopicName ==  '' ">
+                                                <span>Upload File</span>
+                                                <input type="file" class="uploadify" ng-file-select="onFileSelection($files,section.ELearningSectionId,textEditorContent.TopicName)" />
+                                            </div>
+                                            <span class="error" ng-show="unsupportedFileFlag">{{unsupportedFileMsg}}</span>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group m-b20">
+                                        <label class=" col-sm-2 control-label" ng-show="isVideo">Youtube URL:</label>
+                                        <div class="col-sm-6" ng-show="isVideo">
+                                            <div>
+                                                <input type="text" class="form-control display-inline pull-left" maxlength="200" ng-model="eLearningSectionPage.YouTubeLink" ng-change="changeVideoUrl(eLearningSectionPage.YouTubeLink)" placeholder="Enter a video URL from youtube" tooltip="You can enter Youtube URL or Upload File" tooltip-placement="bottom" />
+
+                                                <input type="button" ng-click="saveYouTubeLink(eLearningSectionPage.YouTubeLink,textEditorContent.TopicName,section.ELearningSectionId)" value="Save" class="btn-primary display-inline pull-left btn m-l15" ng-disabled="videoErrorMessage || textEditorContent.TopicName == '' || eLearningSectionPage.YouTubeLink == ''" />
+                                                <label class="display-inline pull-left m-l15">OR</label>
+                                                <br /><br />
+                                                <label class="error pull-left" ng-show="videoErrorMessage">{{errorMessage}}</label>
+                                            </div>
+                                            <label class="error">{{youTubeLinkRequired}}</label>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <div class="col-sm-3" ng-show="isVideo" style="margin-left: -60px;">
+                                            <div class="btn btn-primary uploadify_span pull-left m-l15" ng-disabled="eLearningSectionPage.YouTubeLink !=  '' || textEditorContent.TopicName ==  '' ">
+                                                <span>Upload File</span>
+                                                <input type="file" class="uploadify" ng-file-select="onFileSelection($files,section.ELearningSectionId,textEditorContent.TopicName)" />
+                                            </div>
+                                            <span class="error" ng-show="unsupportedFileFlag">{{unsupportedFileMsg}}</span>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </div>
+
+                                <!--edit youtube link-->
+                                <div class="form-group m-t10 upload_div pos_rel" ng-show="isYoutubeEdit">
+                                    <a class="close" ng-click="closeSectionPage()" title="Close">&times;</a><br />
+                                    <div class="col-sm-3">
+                                        <label class="control-label">Youtube URL:</label>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" maxlength="200" ng-model="eLearningSectionPage.YouTubeLink" placeholder="https://www.youtube.com/.." tooltip="Enter a video URL from youtube" tooltip-placement="bottom" ng-change="changeVideoUrl(eLearningSectionPage.YouTubeLink)" />
+                                        <label class="error pull-left" ng-show="videoErrorMessage">{{errorMessage}}</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <button type="button" ng-click="updateYouTubeLink(eLearningSectionPage.YouTubeLink,eLearningSectionPageId)" class="btn btn-primary pull-left" ng-disabled="videoErrorMessage || eLearningSectionPage.YouTubeLink == ''">Update</button>
+                                        <!--<button type="button" ng-click="cancelYouTubeLink()" class="btn btn-default m-l15 pull-left">Cancel</button>-->
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <!--ck-editor area-->
+                                <div class="m-t10 upload_div pos_rel " ng-show="isCkEditor">
+                                    <a class="close" ng-click="closeSectionPage()" title="Close">&times;</a><br />
+                                    <!--<a class="close" ng-click="closeSectionPage()" title="Close">&times;</a>-->
+                                    <div ng-hide="isEditorEdit" class="m-b20 form-group ">
+                                        <div class="col-sm-2">
+                                            <label class="control-label"><label class="error">*</label>Topic Name: </label>
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <input type="text" ng-model="textEditorContent.TopicName" maxlength="500" placeholder="Enter Topic Name for your section content" class="form-control" tooltip="Topic Name and Editor Text is required for Add Text" tooltip-placement="bottom" />
+                                            <p class="error" ng-show="isTopicNameRequired">{{topicNameRequiredMSg}}</p>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <br />
+                                    <textarea class=" ck-editor" ng-model="textData"></textarea>
+                                    <!--<textarea class="ck-editor" ng-model="textEditorContent.Data"></textarea>-->
+                                    <div class="p-10">
+                                        <input type="button" ng-click="saveEditorContent(section.ELearningSectionId,textData,textEditorContent.TopicName)" value="Save" ng-hide="isEditorEdit" class="btn btn-info" ng-disabled="textData == '' || textEditorContent.TopicName == ''" />
+
+                                        <input type="button" ng-click="updateEditorContent(eLearningSectionPageId,textData)" ng-show="isEditorEdit" value="Update" class="btn btn-info" ng-disabled="textData == '' " />
+                                        <input type="button" ng-click="cancelEditor()" value="Cancel" class="btn btn-default" />
+                                        <!--<label>{{textData}}</label>-->
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <!--interactive portion-->
+                                <div class="interactive_div pos_rel" ng-show="isInteractive">
+                                    <a class="close" ng-click="closeSectionPage()" title="Close" ng-class="{'disabled':isInteractiveDisabled }">&times;</a>
+                                    <div class="interactive-content ">
+                                        <div ng-show="isInteractiveQuestion" class="form-group m-b20 ">
+                                          <div>
+                                              <label>To complete interactive content atleast one option is required</label>
+                                          </div>
+                                            <div class="col-sm-2 control-label">
+                                                <label><label class="error">*</label>Topic Name: </label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" maxlength="500" ng-model="textEditorContent.TopicName" placeholder="Enter Topic Name for your section content" tooltip="Topic Name and Question is required for Add Question" tooltip-placement="bottom" />
+                                                <p class="error" ng-show="isTopicNameRequired">{{topicNameRequiredMSg}}</p>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <div class="form-group " ng-show="isInteractiveQuestion">
+                                            <div class="col-sm-2 control-label">
+                                                <label><label class="error">*</label>Add Question:</label>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control" maxlength="1000" ng-model="interactive.QuestionText" placeholder="Enter Question for your interactive content" />
+                                                <p class="error">{{interactiveQuestionRequired}}</p>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <button type="button" class="btn btn-primary" ng-click="addInteractiveQuestion(interactive.QuestionText,section.ELearningSectionId,textEditorContent.TopicName)" ng-disabled="textEditorContent.TopicName ==  '' || interactive.QuestionText == ''">Add Question</button>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <div ng-hide="isInteractiveQuestion" class="form-group">
+                                            <!--<label>{{mytree.currentNode.id}}</label>-->
+                                            <div class="col-sm-2">
+                                                <label class="control-label"><label class="error">*</label>Add Option:</label>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <input type="text" ng-model="interactive.interactiveOptionText" maxlength="1000" class="form-control" placeholder="Enter Option for your interactive content" tooltip="You can enter Option for your interactive content" tooltip-placement="bottom" />
+                                                <p class="error">{{interactiveOptionRequired}}</p>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <button type="button" ng-click="addInteractiveRootOption(interactive.interactiveOptionText)" class="btn btn-primary" ng-disabled="isInteractiveEdit">Add Parent Option</button>
+                                                <button type="button" ng-click="addInteractiveChildOption(interactive.interactiveOptionText,mytree)" ng-disabled="mytree.currentNode.id == undefined || isInteractiveEdit" class="btn btn-primary">Add Child Option</button>
+                                                <button type="button" ng-click="editInteractiveOption(mytree.currentNode)" class="btn btn-primary" ng-show="mytree.currentNode.id != undefined && !isInteractiveEdit">Edit</button>
+                                                <button type="button" ng-click="updateInteractive(mytree.currentNode,interactive.interactiveOptionText)" class="btn btn-primary" ng-show="mytree.currentNode.id != undefined && isInteractiveEdit">Update </button>
+                                                <!--<button type="button" ng-click="deleteInteractiveOption(mytree)" class="btn btn-primary" ng-show="mytree.currentNode.id != undefined && !isInteractiveEdit">Delete</button>-->
+
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            <!--<button type="button" ng-click="removeNode(mytree.currentNode,mytree)" ng-disabled="!mytree.currentNode">Remove</button>-->
+                                        </div>
+                                    </div>
+                                    <div class="tree-interactive" ng-hide="isInteractiveQuestion">
+                                        <label>Interactive Question : {{interactiveQuestion}}</label>
+                                        <div>
+                                            <label ng-show="treeViewCollection.length > 0">Interactive Options : </label> <div data-angular-treeview="true" data-tree-id="mytree" data-tree-model="treeViewCollection" data-node-id="id" data-node-label="name" data-node-children="children" tooltip="You have to  first select option to add its Child Option or Edit that option" tooltip-placement="left"></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!--display section content list-->
+                        <div class="added-list">
+                            <div ng-repeat="sectionPage in section.ELearningSectionPage" class="list">
+                                <!--<div ng-if="sectionPage.length == '0'">-->
+
+                                <label ng-if="sectionPage.SectionContentFileName != null" ng-model="sectionPage.SectionContentFileGuid">{{sectionPage.SectionContentFileName}}</label>
+                                <label ng-if="sectionPage.SectionContentFileName == null"><label>Youtube :- </label> <a href="{{sectionPage.YouTubeLink}}" target="_blank">{{sectionPage.YouTubeLink}}</a> </label>
+
+                                <div class="pull-right">
+                                    <label class="edit-delete-icon">
+                                        <label ng-if="sectionPage.SectionContentFileName == 'Text'">
+                                            <a ng-click="editEditorContent(sectionPage.SectionContentData,sectionPage.ELearningSectionPageId)" ng-show="section.ContentShowandHidebit" ng-class="{'disabled' : sectionPage.ELearningSectionPageId == eLearningSectionPageId }" ><i class=" glyphicon glyphicon-pencil color_black" title="Edit"></i></a>
+                                        </label>
+                                        <label ng-if="sectionPage.YouTubeLink != null">
+                                            <a ng-click="editYoutubeLink(sectionPage.YouTubeLink,sectionPage.ELearningSectionPageId)" ng-show="section.ContentShowandHidebit" ng-class="{'disabled' : sectionPage.ELearningSectionPageId == eLearningSectionPageId }"><i class=" glyphicon glyphicon-pencil color_black" title="Edit"></i></a>
+                                        </label>
+                                        <label ng-if="sectionPage.IsInteractive == true">
+                                            <a ng-click="editInteractive(sectionPage.ELearningSectionPageId)" ng-show="section.ContentShowandHidebit" ng-class="{'disabled' : sectionPage.ELearningSectionPageId == interactive.ELearningSectionPageId }"><i class="glyphicon glyphicon-pencil color_black" title="Edit"></i></a>
+                                            <!--<a ng-click="deleteSectionPageConfiramtionDialog(sectionPage.ELearningSectionPageId)" class="edit-delete-icon"><i class="glyphicon glyphicon-trash" title="Delete"></i></a>-->
+                                        </label>
+                                    </label>
+                                    <!--<label ng-if="sectionPage.IsInteractive == false">-->
+                                    <a ng-click="deleteSectionPageConfiramtionDialog(sectionPage.ELearningSectionPageId)" class="edit-delete-icon" ng-class="{'disabled' : sectionPage.ELearningSectionPageId == interactive.ELearningSectionPageId || sectionPage.ELearningSectionPageId == eLearningSectionPageId }"><i class="glyphicon glyphicon-trash" title="Delete"></i></a>
+                                    <!--</label>-->
+                                  
+                                </div>
+
+                                <!--</div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="section_div">
+                    <div class="content_header head_sec small_div" id="addsectionHeader">
+                        <h4><span class="glyphicon glyphicon-plus-sign vertical m-r10 section" add-click></span><label class="m-0"><label class="error">*</label>Add Section</label></h4>
+                    </div>
+                    <div class="lecture_div container p-5" id="addsectionDiv">
+                        <!--add section form-->
+                        <form name="sectionform">
+                            <div class="row">
+                                <div class="form-horizontal col-lg-9">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Section Name:</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="secname" maxlength="500" ng-trim="false" placeholder="Enter a Section" style="max-width:100%" ng-model="eLearningSection.Title" name="sectionname" tooltip="You can enter Section Name" tooltip-placement="bottom">
+                                            <p ng-show="isSectionNameRequired" class="error" id="sectionnamereq">{{sectionNameRequiredMsg}}</p>
+                                            <p class="error" ng-show="sectionNameExistFlag" id="sectionnameexist">{{sectionNameExistMsg}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="font-small display-inline" style="width:50px">
+                                        <label ng-show="eLearningSection.Title.length > '0'"> {{500 - eLearningSection.Title.length}}/500</label>
+                                    </div>
+                                    <div class="btn-group" role="group" aria-label="...">
+                                        <button type="submit" class="btn btn-default" title="Save" ng-click="addSection(lecture.ELearningLectureId)">
+                                            <i class="glyphicon glyphicon-floppy-disk"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default section" title="Cancel" cancel-click><i class="glyphicon glyphicon-remove"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="lecture-content-div">
+                <div class="content_header head_sec" id="addlectureHeader">
+                    <h4><span class="glyphicon glyphicon-plus-sign vertical m-r10" add-click></span><label class="m-0"><label class="error">*</label>Add Lecture</label></h4>
+                </div>
+                <div class="lecture_div container p-5" id="addlectureDiv">
+                    <!--add lecture form-->
+                    <form name="lectureform">
+                        <div class="row">
+                            <div class="form-horizontal col-lg-9">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Lecture Name:</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="lecname" maxlength="500" ng-trim="false" placeholder="Enter a Lecture" style="max-width:100%" ng-model="eLearningLecture.Title" name="lecturename" tooltip="You can enter Lecture Name" tooltip-placement="bottom" >
+                                        <p ng-show="isLectureNameRequired" class="error" id="lecturenamere"></p>
+                                        <!--<p ng-show="isLectureNameRequired" class="error"></p>-->
+                                        <p class="error" ng-show="lectureNameExistFlag" id="lecturenameexist"></p>
+                                    </div>
+                                </div>                                
+                            </div>                            
+                            <div class="col-lg-3">
+                                <div class="font-small display-inline" style="width:50px" >
+                                    <label ng-show="eLearningLecture.Title.length > '0'"> {{500 - eLearningLecture.Title.length}}/500</label>
+                                </div>
+                                <div class="btn-group" role="group" aria-label="...">
+                                    <button type="submit" class="btn btn-default" title="Save" ng-click="addLecture()">
+                                        <i class="glyphicon glyphicon-floppy-disk"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-default" title="Cancel" cancel-click><i class="glyphicon glyphicon-remove"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+        <div class="m-t20">
+
+            <button type="button" class="btn btn-primary" ng-click="preview()">Preview</button>
+            <button type="button" class="btn btn-default previous" ng-click="previous()">Previous</button>
+            <button type="button" class="btn btn-default" ng-click="next()">Next</button>
+           <input type="button" class="btn btn-default m-l15" value="Cancel" ng-click="cancelElearningContent()"/>
+        </div>
+
+        <!--<textarea class="ck-editor" ng-model="text"> </textarea>
+        <textarea class="ck-editor" ng-model="textEditorContent.Data"></textarea>
+        <input type="button" ng-click="saveEditorContent(section.ELearningSectionId,textEditorData)" value="Save" ng-hide="isEditorEdit" />
+        <input type="button" ng-click="updateEditorContent(eLearningSectionPageId)" ng-show="isEditorEdit" value="Update" />
+        <input type="button" ng-click="cancelEditor()" value="Cancel" />
+        <label>{{text}}</label>-->
+        <!--preview section of create-elearningsection-->
+        <!--<div ng-if="isPreview" >
+            <div ng-include="'/Templates/ELearningContent/Lecture-SectionSliderPage.html'"></div>
+            <div class="content_div m-t20">
+
+
+                <button type="button" class="btn btn-default" ng-click="hidePreview()">Hide Preview</button>
+            </div>
+        </div>-->
+
+        <div id="busyindicator" class="busy-indicator" ng-show="loadnigFlags">
+            <img src="../Images/Loading.GIF" />
+        </div>
+        <script src="../../Scripts/jquery.easing.min.js"></script>
+        
+
+    </div>
+   
+</div>
+
+<script type="text/ng-template" id="cancelDialogBox">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true" ng-click="closeDeleteDialogBox()">&times;</span><span class="sr-only">Close</span></button>
+
+        </div>
+        <div class="modal-body text-center">
+            <h4>Confirm Navigation</h4>
+            <p>The current page contains incomplete content that will be lost if you leave this page.</p>
+
+            <p>Are you sure you want to leave this page ? </p>
+        </div>
+        <div class="modal-footer">
+
+            <!--@*<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deleteContentPageImage(eLearningSectionPage.Id)" ng-show="sectionFileGuidName == undefined">Yes</button>*@-->
+
+            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="redirectDefaultPage()">Yes</button>
+
+            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="closeDeleteDialogBox()">No</button>
+        </div>
+    </div>
+</script>
